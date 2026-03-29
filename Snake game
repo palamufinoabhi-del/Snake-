@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snake Game</title>
+  <style>
+    canvas {
+      background: black;
+      display: block;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;color:green;">Snake Game</h2>
+<canvas id="game" width="400" height="400"></canvas>
+
+<script>
+let canvas = document.getElementById("game");
+let ctx = canvas.getContext("2d");
+
+let box = 20;
+let snake = [{x: 200, y: 200}];
+let food = {
+  x: Math.floor(Math.random()*20)*box,
+  y: Math.floor(Math.random()*20)*box
+};
+
+let dx = box;
+let dy = 0;
+
+document.addEventListener("keydown", direction);
+
+function direction(event) {
+  if(event.keyCode == 37 && dx == 0) { dx = -box; dy = 0; } // left
+  if(event.keyCode == 38 && dy == 0) { dx = 0; dy = -box; } // up
+  if(event.keyCode == 39 && dx == 0) { dx = box; dy = 0; } // right
+  if(event.keyCode == 40 && dy == 0) { dx = 0; dy = box; } // down
+}
+
+function draw() {
+  ctx.fillStyle = "black";
+  ctx.fillRect(0,0,400,400);
+
+  for(let i=0; i<snake.length; i++) {
+    ctx.fillStyle = (i==0) ? "lime" : "green";
+    ctx.fillRect(snake[i].x, snake[i].y, box, box);
+  }
+
+  ctx.fillStyle = "red";
+  ctx.fillRect(food.x, food.y, box, box);
+
+  let newX = snake[0].x + dx;
+  let newY = snake[0].y + dy;
+
+  if(newX == food.x && newY == food.y) {
+    food = {
+      x: Math.floor(Math.random()*20)*box,
+      y: Math.floor(Math.random()*20)*box
+    };
+  } else {
+    snake.pop();
+  }
+
+  let newHead = {x: newX, y: newY};
+
+  if(newX < 0 || newY < 0 || newX >= 400 || newY >= 400) {
+    clearInterval(game);
+    alert("Game Over 😢");
+  }
+
+  snake.unshift(newHead);
+}
+
+let game = setInterval(draw, 100);
+</script>
+
+</body>
+</html>
